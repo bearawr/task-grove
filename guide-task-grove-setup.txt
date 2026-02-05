@@ -1,0 +1,569 @@
+
+
+🌳 Task Grove - Complete Setup Guide
+
+PART 1: GitHub & Git Setup
+Step 1: Create GitHub Repository
+	1	Go to https://github.com
+	2	Click the "+" icon (top right) → "New repository"
+	3	Fill in:
+	◦	Repository name: task-grove
+	◦	Description: "Beautiful task manager with blooming priorities 🌸"
+	◦	Public or Private (your choice)
+	◦	❌ DO NOT check "Add a README file"
+	◦	❌ DO NOT add .gitignore yet
+	◦	❌ DO NOT add a license yet
+	4	Click "Create repository"
+Step 2: Set Up Git Locally
+Open your terminal and run:
+# Check if git is installed
+git --version
+
+# If not installed, install it:
+# macOS: brew install git
+# or download from: https://git-scm.com/downloads
+
+# Configure git (first time only)
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+PART 2: Create Local Project
+Step 3: Create Project Directory
+# Navigate to where you want your project
+cd ~/Documents  # or wherever you like
+
+# Create project folder
+mkdir task-grove
+cd task-grove
+
+# Initialize git
+git init
+
+# Create initial branch (main)
+git branch -M main
+Step 4: Connect to GitHub
+# Add GitHub as remote (replace YOUR_USERNAME)
+git remote add origin https://github.com/YOUR_USERNAME/task-grove.git
+
+# Verify it worked
+git remote -v
+# Should show:
+# origin  https://github.com/YOUR_USERNAME/task-grove.git (fetch)
+# origin  https://github.com/YOUR_USERNAME/task-grove.git (push)
+
+PART 3: STAGE 0 - Project Setup
+Step 5: Create Vite React App
+# Still in task-grove directory
+npm create vite@latest . -- --template react
+
+# When prompted:
+# "Current directory is not empty. Remove existing files and continue? (y/N)"
+# Type: y
+
+# Install dependencies
+npm install
+
+# Install PWA plugin
+npm install -D vite-plugin-pwa
+
+# Install date-fns (for date handling)
+npm install date-fns
+Step 6: Project Structure Setup
+# Create necessary folders
+mkdir -p src/components
+mkdir -p src/utils
+
+# List what you have
+ls -la
+# You should see: node_modules, src, package.json, etc.
+Step 7: Update vite.config.js
+Open vite.config.js in VS Code and replace with:
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Task Grove',
+        short_name: 'Grove',
+        description: 'Beautiful task management with blooming priorities',
+        theme_color: '#0f7b6c',
+        background_color: '#ffffff',
+        display: 'standalone',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+      }
+    })
+  ]
+})
+Step 8: Create .gitignore
+# Create .gitignore file
+touch .gitignore
+Open .gitignore and add:
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Production build
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# PWA
+dev-dist/
+Step 9: First Commit! 🎉
+# Check status
+git status
+# You'll see lots of new files
+
+# Add all files
+git add .
+
+# Commit
+git commit -m "Initial project setup with Vite + React + PWA"
+
+# Push to GitHub
+git push -u origin main
+
+# Enter GitHub credentials if prompted
+✅ Go to GitHub and refresh - you should see your files!
+
+PART 4: STAGE 1 - Styling Foundation
+Step 10: Update index.css
+Open src/index.css and replace everything with:
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f6f3;
+  --bg-hover: #f1f1ef;
+  --text-primary: #37352f;
+  --text-secondary: #787774;
+  --text-tertiary: #9b9a97;
+  --accent-green: #0f7b6c;
+  --accent-emerald: #0b6e5f;
+  --accent-yellow: #fbbf24;
+  --accent-blue: #529cca;
+  --accent-red: #eb5757;
+  --accent-orange: #d9730d;
+  --accent-purple: #9065b0;
+  --border-color: #e9e9e7;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+button {
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.15s ease;
+  font-size: 14px;
+}
+
+input, textarea, select {
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--border-color);
+  transition: all 0.15s ease;
+  font-size: 14px;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px var(--accent-blue);
+}
+
+::selection {
+  background: rgba(82, 156, 202, 0.3);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bloom {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+.animate-bloom {
+  animation: bloom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+Step 11: Update index.html
+Open index.html and update:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f7b6c" />
+    <meta name="description" content="Beautiful task management with blooming priorities" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Task Grove</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+Step 12: Test It!
+# Start dev server
+npm run dev
+
+# Open browser to http://localhost:5173
+# You should see the default Vite + React page with new styling
+Step 13: Commit Stage 1
+# Stop the dev server (Ctrl+C)
+
+# Check what changed
+git status
+
+# Add changes
+git add .
+
+# Commit
+git commit -m "Add Notion-style global styling and CSS variables"
+
+# Push
+git push
+
+PART 5: STAGE 2 - Data Storage
+Step 14: Create Storage Utility
+# Create the file
+touch src/utils/storage.js
+Open src/utils/storage.js and add:
+const STORAGE_KEY = 'task-grove-data'
+
+export const loadData = () => {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY)
+    return data ? JSON.parse(data) : null
+  } catch (error) {
+    console.error('Error loading data:', error)
+    return null
+  }
+}
+
+export const saveData = (data) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (error) {
+    console.error('Error saving data:', error)
+  }
+}
+
+export const clearData = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch (error) {
+    console.error('Error clearing data:', error)
+  }
+}
+Step 15: Commit Stage 2
+git add .
+git commit -m "Add localStorage utilities for data persistence"
+git push
+
+PART 6: STAGE 3 - Date Parser
+Step 16: Create Date Parser Utility
+touch src/utils/dateParser.js
+Open src/utils/dateParser.js and add:
+// Parse natural language date inputs like @Feb 2 or {Feb 5}
+export const parseTaskInput = (input) => {
+  let name = input
+  let date = null
+  let deadline = null
+
+  // Extract @date pattern
+  const dateMatch = input.match(/@(\w+\s+\d+)/i)
+  if (dateMatch) {
+    const parsedDate = parseNaturalDate(dateMatch[1])
+    if (parsedDate) {
+      date = parsedDate
+      name = name.replace(dateMatch[0], '').trim()
+    }
+  }
+
+  // Extract {deadline} pattern
+  const deadlineMatch = input.match(/\{([^}]+)\}/)
+  if (deadlineMatch) {
+    const parsedDeadline = parseNaturalDate(deadlineMatch[1])
+    if (parsedDeadline) {
+      deadline = parsedDeadline
+      name = name.replace(deadlineMatch[0], '').trim()
+    }
+  }
+
+  return { name, date, deadline }
+}
+
+const parseNaturalDate = (dateStr) => {
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  
+  // Handle formats like "Feb 2", "February 2", "2/5", etc.
+  const monthNames = {
+    'jan': 0, 'january': 0,
+    'feb': 1, 'february': 1,
+    'mar': 2, 'march': 2,
+    'apr': 3, 'april': 3,
+    'may': 4,
+    'jun': 5, 'june': 5,
+    'jul': 6, 'july': 6,
+    'aug': 7, 'august': 7,
+    'sep': 8, 'september': 8,
+    'oct': 9, 'october': 9,
+    'nov': 10, 'november': 10,
+    'dec': 11, 'december': 11
+  }
+
+  // Try "Month Day" format
+  const monthDayMatch = dateStr.match(/(\w+)\s+(\d+)/i)
+  if (monthDayMatch) {
+    const monthStr = monthDayMatch[1].toLowerCase()
+    const day = parseInt(monthDayMatch[2])
+    const month = monthNames[monthStr]
+    
+    if (month !== undefined && day >= 1 && day <= 31) {
+      const date = new Date(currentYear, month, day)
+      // If the date is in the past, use next year
+      if (date < today) {
+        date.setFullYear(currentYear + 1)
+      }
+      return date.toISOString().split('T')[0]
+    }
+  }
+
+  // Try "M/D" or "M/D/Y" format
+  const slashMatch = dateStr.match(/(\d+)\/(\d+)(?:\/(\d+))?/)
+  if (slashMatch) {
+    const month = parseInt(slashMatch[1]) - 1
+    const day = parseInt(slashMatch[2])
+    const year = slashMatch[3] ? parseInt(slashMatch[3]) : currentYear
+    
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      const date = new Date(year, month, day)
+      return date.toISOString().split('T')[0]
+    }
+  }
+
+  // Handle relative dates
+  const lowerStr = dateStr.toLowerCase().trim()
+  if (lowerStr === 'today') {
+    return today.toISOString().split('T')[0]
+  }
+  if (lowerStr === 'tomorrow') {
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    return tomorrow.toISOString().split('T')[0]
+  }
+
+  return null
+}
+
+// Calculate days until deadline
+export const getDaysUntilDeadline = (deadlineStr) => {
+  if (!deadlineStr) return null
+  
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  const deadline = new Date(deadlineStr)
+  deadline.setHours(0, 0, 0, 0)
+  
+  const diffTime = deadline - today
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  if (diffDays < 0) return `${Math.abs(diffDays)} days ago`
+  if (diffDays === 0) return 'Today'
+  if (diffDays === 1) return 'Tomorrow'
+  return `in ${diffDays} days`
+}
+Step 17: Commit Stage 3
+git add .
+git commit -m "Add natural language date parser (@Feb 5, {Feb 10})"
+git push
+
+QUICK GIT COMMAND REFERENCE 📝
+For the rest of the stages, here's your workflow:
+# 1. Make your code changes in VS Code
+
+# 2. Check what changed
+git status
+
+# 3. See detailed changes (optional)
+git diff
+
+# 4. Add all changes
+git add .
+
+# 5. Commit with message
+git commit -m "Your commit message here"
+
+# 6. Push to GitHub
+git push
+
+# 7. View commit history (optional)
+git log --oneline
+
+What's Next?
+You've completed Stages 0-3! Here's what you have:
+	•	✅ GitHub repo connected
+	•	✅ Vite + React + PWA setup
+	•	✅ Notion-style design system
+	•	✅ LocalStorage utilities
+	•	✅ Date parser (the magic @Feb 5 parser!)
+Ready for Stage 4? Let me know and I'll guide you through creating the Navigation component step by step!
+
+Common Git Commands You'll Need
+# See your current branch
+git branch
+
+# Create new branch (for experimentation)
+git checkout -b feature-name
+
+# Switch back to main
+git checkout main
+
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Undo changes to a file
+git checkout -- filename
+
+# Pull latest from GitHub (before you start working)
+git pull origin main
+
+Ready to continue? Type "Stage 4 please!" and I'll walk you through the Navigation component! 🚀
