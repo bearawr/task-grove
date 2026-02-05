@@ -48,3 +48,5 @@ coverage/
 #PWA
 dev-dist/
 
+#txt file
+guide-task-grove-setup.txt
